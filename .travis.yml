@@ -1,0 +1,22 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t rcouey/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true rcouey/react-test npm test
+
+after_success:
+    - docker build -t rcouey/multi-client ./client
+    - docker build -t rcouey/multi-nginx ./nginx
+    - docker build -t rcouey/multi-server ./server
+    - docker build -t rcouey/multi-worker ./worker
+    #push images to docker hub
+    #login to docker cli
+    - echo "$DOCKER_PASS" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push rcouey/multi-client
+    - docker push rcouey/multi-nginx
+    - docker push rcouey/multi-server
+    - docker push rcouey/multi-worker
