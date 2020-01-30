@@ -20,3 +20,4 @@ after_success:
     - docker push rcouey/multi-nginx
     - docker push rcouey/multi-server
     - docker push rcouey/multi-worker
+    
